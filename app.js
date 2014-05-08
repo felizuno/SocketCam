@@ -1,14 +1,21 @@
+// ===============================================
+// =========== Dependencies
+// ===============================================
+
+
 var http = require("http"),
     url = require("url"),
     path = require("path"),
     fs = require("fs"),
     ws = require("ws");
 
+
 // ===============================================
 // =========== HTTP Server
 // ===============================================
 // From: https://gist.github.com/rpflorence/701407
 // ===============================================
+
 
 var httpPort = process.argv[2] || 8888;
 http.createServer(function(request, response) {
@@ -42,11 +49,10 @@ http.createServer(function(request, response) {
 }).listen(parseInt(httpPort, 10));
 
 
-
-
 // ===============================================
 // =========== Socket Server
 // ===============================================
+
 
 var socketPort = 9999,
     socketServer = new ws.Server({port: socketPort});
@@ -55,9 +61,11 @@ socketServer.on("connection", function(socket) {
   cameraServer.addClient(socket);
 });
 
+
 // ===============================================
 // =========== App
 // ===============================================
+
 
 var cameraServer = {
   _clients: [],
@@ -89,9 +97,11 @@ Client.prototype = {
   }
 };
 
+
 // ===============================================
 // =========== Boot Logging
 // ===============================================
+
 
 console.log('\n\n\nSocket server listening on port ' + socketPort );
 console.log('\nHTTP server listening on port ' + httpPort );
