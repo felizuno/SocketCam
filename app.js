@@ -73,4 +73,6 @@ Client.prototype = {
   }
 };
 
-console.log('Socket server listening on port ' + socketPort );
+console.log('\n\n\nSocket server listening on port ' + socketPort );
+console.log('\nHTTP server listening on port ' + httpPort );
+console.log('\n\n\n ctrl+c to stop');
