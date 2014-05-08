@@ -14,9 +14,13 @@ var cameraServer = {
     console.log('New client, total is ' + this._clients.length);
   },
 
-  removeUser: function(client) {
+  removeClient: function(client) {
     this._clients.splice(this._clients.indexOf(client), 1, 0);
     console.log('Lost client, total is ' + this._clients.length);
+  },
+
+  broadcast: function(data) {
+    this._clients.forEach(function(client) { client.sendStream(data); });
   }
 };
 
@@ -24,6 +28,12 @@ var cameraServer = {
 var Client = function(socket) {
   this.socket = socket;
   this.socket.on('close', function() { cameraServer.removeUser(this); });
+};
+
+Client.prototype = {
+  sendStream: function(data) {
+    this.socket.send({ method: 'newFrame', data: data });
+  }
 };
 
 console.log('Socket server listening on port ' + port );
