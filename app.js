@@ -2,11 +2,15 @@ var http = require("http"),
     url = require("url"),
     path = require("path"),
     fs = require("fs"),
-    ws = require("ws"),
-    httpPort = process.argv[2] || 8888,
-    socketPort = 9999,
-    socketServer = new ws.Server({port: socketPort});
+    ws = require("ws");
 
+// ===============================================
+// =========== HTTP Server
+// ===============================================
+// From: https://gist.github.com/rpflorence/701407
+// ===============================================
+
+var httpPort = process.argv[2] || 8888;
 http.createServer(function(request, response) {
 
   var uri = url.parse(request.url).pathname,
@@ -38,9 +42,22 @@ http.createServer(function(request, response) {
 }).listen(parseInt(httpPort, 10));
 
 
+
+
+// ===============================================
+// =========== Socket Server
+// ===============================================
+
+var socketPort = 9999,
+    socketServer = new ws.Server({port: socketPort});
+
 socketServer.on("connection", function(socket) {
   cameraServer.addClient(socket);
 });
+
+// ===============================================
+// =========== App
+// ===============================================
 
 var cameraServer = {
   _clients: [],
@@ -60,7 +77,6 @@ var cameraServer = {
   }
 };
 
-
 var Client = function(socket) {
   this.socket = socket;
   this.openendOn = Date.now();
@@ -72,6 +88,10 @@ Client.prototype = {
     this.socket.send(JSON.stringify({ method: 'newFrame', data: data }));
   }
 };
+
+// ===============================================
+// =========== Boot Logging
+// ===============================================
 
 console.log('\n\n\nSocket server listening on port ' + socketPort );
 console.log('\nHTTP server listening on port ' + httpPort );
