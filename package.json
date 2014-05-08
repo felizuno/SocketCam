@@ -1,0 +1,22 @@
+{
+  "name": "socketcam",
+  "version": "0.0.0",
+  "description": "Using websockets to stream camera data from a RaspberryPi",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/felizuno/SocketCam.git"
+  },
+  "author": "Kevin Ewing",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/felizuno/SocketCam/issues"
+  },
+  "homepage": "https://github.com/felizuno/SocketCam",
+  "dependencies": {
+    "ws": "^0.4.31"
+  }
+}
