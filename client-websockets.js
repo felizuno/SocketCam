@@ -3,7 +3,8 @@
 var socketUrl = "ws://< RASPBERRY PI IP ADDRESS >:9999";
 
 window.SocketServer = function(cfg) {
-  var noOp = function() { return false; },
+  var SupportedSocket = window.WebSocket || window.MozWebSocket,
+      noOp = function() { return false; },
       defaults = {
         connectCallback: noOp,
         disconnectCallback: noOp,
@@ -16,39 +17,31 @@ window.SocketServer = function(cfg) {
     ? cfg
     : defaults;
 
-  this.connection = null;
+  this.connection = (SupportedSocket)
+    ? new SupportedSocket(socketUrl)
+    : null;
+    
+  if (socketServer) this.bindMessageHandlers();
 };
 
 SocketServer.prototype = {
-  send: function(method, data, next) {
-    if (method == "connect") {
-      var SupportedSocket = window.WebSocket || window.MozWebSocket;
-      if (SupportedSocket) {
-        this.connection = new SupportedSocket(socketUrl);
-        this.bindMessageHandlers();
-      }
-      
-      data.code = (SupportedSocket) ? "success" : "failure";
-      next(data);
-    } else if (method == "message") {
-      if (this.connection && this.connection.readyState != 1) return;
-      this.connection.send(JSON.stringify({ method: method, data: data }));
-    }
+  send: function(method, data) {
+    if (this.connection && this.connection.readyState != 1) return;
+    this.connection.send(JSON.stringify({ method: method, data: data }));
   },
 
-  bindMessageHandlers: function(data, next) {
+  bindMessageHandlers: function(data) {
     this.connection.onopen = function() {
-      this.connectCallback(this);
+      this.callbacks.connectCallback(this);
     };
     
     this.connection.onmessage = function(event) { 
       var envelope = JSON.parse(event.data);
-      this.drawHandler(envelope.method, envelope.data);
+      this.callbacks.drawHandler(envelope.method, envelope.data);
     };
     
     this.connection.onclose = function(event) { 
-      data.code = "failure";
-      next(data);
+      this.callbacks.disconnectCallback();
     };
   },
 };
