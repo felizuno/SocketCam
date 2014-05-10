@@ -127,7 +127,7 @@ var cameraServer = {
   },
 
   pokeCamera: function() {
-    if (this._stream !== null && this._clients.length > 0) {
+    if (this._stream === null && this._clients.length > 0) {
       this.startCapture();
     }
   }
