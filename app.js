@@ -7,7 +7,8 @@ var http = require("http"),
     url = require("url"),
     path = require("path"),
     fs = require("fs"),
-    ws = require("ws");
+    ws = require("ws"),
+    exec = require('child_process').exec;
 
 
 // ===============================================
@@ -70,6 +71,19 @@ socketServer.on("connection", function(socket) {
 var cameraServer = {
   _clients: [],
 
+  startCapture: function() {
+    var counter = 0;
+    var stdoutHandler = function(err, stdout, stderr) {
+          if (err) console.log ('you set it up wrong', err);
+          console.log('stdout!', counter++);
+        },
+        childProcess = exec('raspivid -t 1000 -o - ', stdoutHandler);
+  },
+
+  stopCapture: function() {
+
+  },
+
   addClient: function(socket) {
     _clients.push(new Client(socket));
     console.log('New client, total is ' + this._clients.length);
@@ -106,3 +120,6 @@ Client.prototype = {
 console.log('\n\n\nSocket server listening on port ' + socketPort );
 console.log('\nHTTP server listening on port ' + httpPort );
 console.log('\n\n\n ctrl+c to stop');
+
+console.log('\n\n\nStarting video capture!');
+cameraServer.startCapture();

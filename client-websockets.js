@@ -41,7 +41,7 @@ SocketServer.prototype = {
     };
     
     this.connection.onclose = function(event) { 
-      this.callbacks.disconnectCallback();
+      this.callbacks.disconnectCallback(this);
     };
   },
 };

@@ -26,15 +26,21 @@
       return !!this.streamSocket.connection;
     },
 
-    connectCallback: function() {
+    connectCallback: function(socket) {
+      // show opening frames
+    },
+
+    disconnectCallback: function(socket) {
 
     },
 
-    disconnectCallback: function() {
-
+    drawHandler: function(method, data) {
+      if (method === 'newFrame') {
+        this.streamJPEGDataToCanvas(data);
+      }
     },
 
-    drawHandler: function() {
+    streamJPEGDataToCanvas: function(rawJPEG) {
 
     }
   };
