@@ -20,10 +20,10 @@
       // Got new data
       stream.on('data', function(data){
         console.log('[ DATA ARRIVE ] ', data);
-        // var bytes = new Uint8Array(data);
+        var bytes = new Uint8Array(data);
         // parts.push(data);
 
-        tempcontext.drawImage(data, 0, 0);
+        tempcontext.drawImage(bytes, 0, 0);
       });
       stream.on('close', function(){
         console.log('[ STREAM END ]')
