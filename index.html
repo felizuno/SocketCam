@@ -21,11 +21,11 @@
       stream.on('close', function(){
         console.log('[ STREAM END ]')
         // Display new data in browser!
-        var img = document.createElement("img");
-        img.src = (window.URL || window.webkitURL).createObjectURL(new Blob(parts));
+        var video = document.createElement("video");
+        video.src = (window.URL || window.webkitURL).createObjectURL(new Blob(parts));
         document.body.innerHTML = "";
-        document.body.appendChild(img);
-        lastFrame = img;
+        document.body.appendChild(video);
+        lastFrame = video;
       });
     });
   </script>
