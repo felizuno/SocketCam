@@ -97,7 +97,7 @@ var cameraServer = {
         endHandler = function() {
           self.broadcaster.emit('end');
         },
-        childProcess = spawn('raspivid', ['-p', '200,0,400,300', '-t', '10000', '-o', '-' ]);
+        childProcess = spawn('raspivid', ['-p', '600,0,400,300', '-t', '10000', '-o', '-' ]);
 
     this._childProcess = childProcess;
     childProcess.stdout.on('data', stdoutHandler);
@@ -121,7 +121,7 @@ var cameraServer = {
     });
 
     this.broadcaster.addListener('end', function(data) {
-      clientStream.close();
+      client.close();
     });
 
 
