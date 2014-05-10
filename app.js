@@ -107,19 +107,9 @@ var cameraServer = {
   },
 
   addClient: function(client) {
-    console.log('New client', client);
-
-    fs.writeFile("/client.txt", JSON.stringify(client), function(err) {
-    if(err) {
-        console.log(err);
-    } else {
-        console.log("The file was saved!");
-    }
-}); 
-
     this._clients.push(client);
     console.log('Client total is ' + this._clients.length);
-
+    client.createStream();
     client.on('close', this.removeClient.bind(this, client));
 
     this.pokeCamera();
