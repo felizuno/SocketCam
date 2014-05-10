@@ -85,7 +85,6 @@ binaryServer.on("connection", function(client) {
 var cameraServer = {
   _childProcess: null,
   _clients: [],
-  _stream: null,
 
   startCapture: function() {
     console.log('\n\n\nStarting video capture!');
@@ -96,7 +95,7 @@ var cameraServer = {
           self.broadcast(data);
           console.log('[ stdout ] DATA EVENT', ++counter);
         },
-        childProcess = spawn('raspivid', ['-t', '0', '-o', '-' ]);
+        childProcess = spawn('raspivid', ['-p', '800,0,800,600', '-t', '10000', '-o', '-' ]);
 
     this._childProcess = childProcess;
     childProcess.stdout.on('data', stdoutHandler);
@@ -108,26 +107,40 @@ var cameraServer = {
   },
 
   addClient: function(client) {
+    console.log('New client', client);
+
     this._clients.push(client);
-    console.log('New client, total is ' + this._clients.length);
+    console.log('Client total is ' + this._clients.length);
+
     client.on('close', this.removeClient.bind(this, client));
+
     this.pokeCamera();
   },
 
   removeClient: function(client) {
-    this._clients.splice(this._clients.indexOf(client), 1, 0);
-    if (this._clients.length === 0) this.stopCapture();
+    var index = this._clients.indexOf(client);
+    if (index === -1) {
+      console.log('OH NO! Could not find client to disconnect them!');
+      this.stopCapture(); // to prevent infinite capture
+      return false;
+    }
+
+    this._clients.splice(index, 1, 0);
     console.log('Lost client, total is ' + this._clients.length);
+
+    if (this._clients.length === 0) this.stopCapture();
+    return true;
   },
 
   broadcast: function(data) {
+    console.log('[ BROADCAST ] Broadcasting data: ', data);
     this._clients.forEach(function(client) {
       client.stream.write(data);
     });
   },
 
   pokeCamera: function() {
-    if (this._stream === null && this._clients.length > 0) {
+    if (this._childProcess === null && this._clients.length > 0) {
       this.startCapture();
     }
   }
