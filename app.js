@@ -69,24 +69,31 @@ socketServer.on("connection", function(socket) {
 
 
 var cameraServer = {
+  _captures: 0,
+  _halt: false,
+  _childProcess: null,
   _clients: [],
 
   startCapture: function() {
-    var counter = 0,
+    var self = this,
+        counter = 0,
         stdoutHandler = function(data) {
-          console.log('[ stdout ] DATA EVENT', counter++);
+          console.log('[ stdout ] DATA EVENT', ++counter);
         },
         endHandler = function(data) {
           console.log('[ STDOUT END ]');
+          console.log('[ capture ] END CAPTURE ', ++self._captures);
+          if (!sefl.halt) self.startCapture();
         },
         childProcess = spawn('raspivid', ['-t', '1000', '-o', '-' ]);
 
+    this._childProcess = childProcess;
     childProcess.stdout.on('data', stdoutHandler);
     childProcess.stdout.on('end', endHandler);
   },
 
   stopCapture: function() {
-
+    this.halt = true;
   },
 
   addClient: function(socket) {
