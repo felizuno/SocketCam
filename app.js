@@ -110,9 +110,8 @@ var cameraServer = {
   addClient: function(client) {
     this._clients.push(client);
     console.log('New client, total is ' + this._clients.length);
-    stream = client.createStream();
-    stream.on('open', function() { client._status = 1; });
-    stream.on('close', this.removeClient.bind(this, client));
+    client.on('open', function() { client._status = 1; });
+    client.on('close', this.removeClient.bind(this, client));
     this.pokeCamera();
   },
 
