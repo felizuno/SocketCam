@@ -8,7 +8,7 @@ var http = require("http"),
     path = require("path"),
     fs = require("fs"),
     ws = require("ws"),
-    exec = require('child_process').exec;
+    spawn = require('child_process').spawn;
 
 
 // ===============================================
@@ -77,7 +77,7 @@ var cameraServer = {
           if (err) console.log ('you set it up wrong', err);
           console.log('stdout!', counter++);
         },
-        childProcess = exec('raspivid -t 1000 -o - ', stdoutHandler);
+        childProcess = spawn('raspivid -t 1000 -o - ', stdoutHandler);
   },
 
   stopCapture: function() {
