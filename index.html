@@ -6,6 +6,10 @@
     var client = new BinaryClient('ws://10.0.1.13:9999');
     var lastFrame = null;
     // Received new stream from server!
+    client.on('all', function() {
+      console.log('[ STUFF IS HAPPENING ]', arguments);
+    });
+    
     client.on('stream', function(stream, meta){    
       // Buffer for parts
       var parts = [];
