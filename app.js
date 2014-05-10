@@ -79,7 +79,7 @@ var cameraServer = {
         endHandler = function(data) {
           console.log('[ STDOUT END ]');
         },
-        childProcess = spawn('raspivid -t 1000 -o - ', function (err, stuff) {
+        childProcess = spawn('raspivid -t 1000 -o - ', function (err) {
           if (err) console.log('You are dumb');
           else console.log('mystery params: ', arguments);
         });
