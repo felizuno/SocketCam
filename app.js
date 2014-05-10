@@ -9,6 +9,7 @@ var http = require("http"),
     fs = require("fs"),
     ws = require("ws"),
     BinaryServer = require('binaryjs').BinaryServer,
+    BinaryClient = require('binaryjs').BinaryClient,
     spawn = require('child_process').spawn,
     EventEmitter = require('events').EventEmitter;
 
@@ -59,6 +60,11 @@ http.createServer(function(request, response) {
 var socketPort = 9999,
     socketServer = new ws.Server({port: socketPort});
 
+socketServer.on("connection", function(socket) {
+  cameraServer.addClient(socket);
+});
+
+
 // ===============================================
 // =========== Binary Server
 // ===============================================
@@ -66,10 +72,6 @@ var socketPort = 9999,
 
 var binaryServer = BinaryServer({
   server: socketServer
-});
-
-binaryServer.on("connection", function(client) {
-  cameraServer.addClient(client);
 });
 
 
@@ -104,7 +106,8 @@ var cameraServer = {
     this.broadcaster.removeAllListeners('frame');
   },
 
-  addClient: function(client) {
+  addClient: function(socket) {
+    var client = new BinaryClient(socket);
     this._clients.push(client);
     console.log('Client total is ' + this._clients.length);
     this.broadcaster.addListener('frame', function(data) {
