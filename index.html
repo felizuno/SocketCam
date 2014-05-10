@@ -11,6 +11,7 @@
       var parts = [];
       // Got new data
       stream.on('data', function(data){
+        console.log('[ DATA ARRIVE ] ', data);
         var img = document.createElement("img");
         img.src = (window.URL || window.webkitURL).createObjectURL(new Blob(data));
         document.body.removeChild(lastFrame);
