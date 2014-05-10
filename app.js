@@ -9,7 +9,8 @@ var http = require("http"),
     fs = require("fs"),
     ws = require("ws"),
     BinaryServer = require('binaryjs').BinaryServer,
-    spawn = require('child_process').spawn;
+    spawn = require('child_process').spawn,
+    EventEmitter = require('events').EventEmitter;
 
 // ===============================================
 // =========== HTTP Server
@@ -85,6 +86,7 @@ binaryServer.on("connection", function(client) {
 var cameraServer = {
   _childProcess: null,
   _clients: [],
+  broadcaster: new EventEmitter(),
 
   startCapture: function() {
     console.log('\n\n\nStarting video capture!');
@@ -92,7 +94,7 @@ var cameraServer = {
     var self = this,
         counter = 0,
         stdoutHandler = function(data) {
-          self.broadcast(data);
+          self.broadcaster.emit('frame', data);
           console.log('[ stdout ] DATA EVENT', ++counter);
         },
         childProcess = spawn('raspivid', ['-p', '200,0,400,300', '-t', '10000', '-o', '-' ]);
@@ -104,12 +106,16 @@ var cameraServer = {
   stopCapture: function() {
     this._childProcess.kill();
     this._childProcess = null;
+    this.broadcaster.removeAllListeners('frame');
   },
 
   addClient: function(client) {
     this._clients.push(client);
     console.log('Client total is ' + this._clients.length);
-    client.createStream();
+    broadcaster.addListener('frame', function(data) {
+      client.send(data);
+    });
+
     client.on('close', this.removeClient.bind(this, client));
 
     this.pokeCamera();
@@ -119,6 +125,7 @@ var cameraServer = {
     var index = this._clients.indexOf(client);
     if (index === -1) {
       console.log('OH NO! Could not find client to disconnect them!');
+      this._clients = [];
       this.stopCapture(); // to prevent infinite capture
       return false;
     }
@@ -128,13 +135,6 @@ var cameraServer = {
 
     if (this._clients.length === 0) this.stopCapture();
     return true;
-  },
-
-  broadcast: function(data) {
-    console.log('[ BROADCAST ] Broadcasting data: ', data);
-    this._clients.forEach(function(client) {
-      client.send(data);
-    });
   },
 
   pokeCamera: function() {
