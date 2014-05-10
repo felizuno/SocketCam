@@ -95,7 +95,7 @@ var cameraServer = {
           self.broadcast(data);
           console.log('[ stdout ] DATA EVENT', ++counter);
         },
-        childProcess = spawn('raspivid', ['-p', '800,0,800,600', '-t', '10000', '-o', '-' ]);
+        childProcess = spawn('raspivid', ['-p', '200,0,400,300', '-t', '10000', '-o', '-' ]);
 
     this._childProcess = childProcess;
     childProcess.stdout.on('data', stdoutHandler);
@@ -135,7 +135,7 @@ var cameraServer = {
   broadcast: function(data) {
     console.log('[ BROADCAST ] Broadcasting data: ', data);
     this._clients.forEach(function(client) {
-      client.send(data);
+      client.pipe(data);
     });
   },
 
