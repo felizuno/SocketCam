@@ -112,7 +112,7 @@ var cameraServer = {
   addClient: function(client) {
     this._clients.push(client);
     console.log('Client total is ' + this._clients.length);
-    broadcaster.addListener('frame', function(data) {
+    this.broadcaster.addListener('frame', function(data) {
       client.send(data);
     });
 
