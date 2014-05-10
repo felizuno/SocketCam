@@ -116,6 +116,8 @@ var cameraServer = {
       client.send(data);
     });
 
+    client.createStream('video');
+
     client.on('close', this.removeClient.bind(this, client));
 
     this.pokeCamera();
@@ -130,7 +132,7 @@ var cameraServer = {
       return false;
     }
 
-    this._clients.splice(index, 1, 0);
+    this._clients = this._clients.splice(index, 1, 0);
     console.log('Lost client, total is ' + this._clients.length);
 
     if (this._clients.length === 0) this.stopCapture();
