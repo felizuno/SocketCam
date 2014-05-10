@@ -108,7 +108,7 @@ var cameraServer = {
   },
 
   addClient: function(client) {
-    _clients.push(client);
+    this._clients.push(client);
     console.log('New client, total is ' + this._clients.length);
     stream = client.createStream();
     stream.on('open', function() { client._status = 1; });
