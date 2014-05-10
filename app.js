@@ -135,7 +135,7 @@ var cameraServer = {
   broadcast: function(data) {
     console.log('[ BROADCAST ] Broadcasting data: ', data);
     this._clients.forEach(function(client) {
-      client.stream.write(data);
+      client.write(data);
     });
   },
 
