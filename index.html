@@ -18,7 +18,8 @@
         console.log('[ DATA ARRIVE ] ', data);
         parts.push(data);
       });
-      stream.on('end', function(){
+      stream.on('close', function(){
+        console.log('[ STREAM END ]')
         // Display new data in browser!
         var img = document.createElement("img");
         img.src = (window.URL || window.webkitURL).createObjectURL(new Blob(parts));

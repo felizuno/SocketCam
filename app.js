@@ -94,10 +94,14 @@ var cameraServer = {
           self.broadcaster.emit('frame', data);
           console.log('[ stdout ] DATA EVENT', ++counter);
         },
+        endHandler = function() {
+          self.broadcaster.emit('end');
+        },
         childProcess = spawn('raspivid', ['-p', '200,0,400,300', '-t', '10000', '-o', '-' ]);
 
     this._childProcess = childProcess;
     childProcess.stdout.on('data', stdoutHandler);
+    childProcess.stdout.on('end', endHandler);
   },
 
   stopCapture: function() {
@@ -114,6 +118,10 @@ var cameraServer = {
     var clientStream = client.createStream('video');
     this.broadcaster.addListener('frame', function(data) {
       clientStream.write(data, 'video');
+    });
+
+    this.broadcaster.addListener('end', function(data) {
+      clientStream.close();
     });
 
 
