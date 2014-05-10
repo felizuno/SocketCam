@@ -78,6 +78,10 @@ var cameraServer = {
     var self = this,
         counter = 0,
         stdoutHandler = function(data) {
+          if (counter === 5) {
+            console.log('[ stdout ] SAMPLE DATA ', data);
+            self.stopCapture();
+          }
           console.log('[ stdout ] DATA EVENT', ++counter);
         },
         endHandler = function(data) {
