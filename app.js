@@ -8,7 +8,7 @@ var http = require("http"),
     path = require("path"),
     fs = require("fs"),
     ws = require("ws"),
-    binaryServer = require('binaryjs').BinaryServer,
+    BinaryServer = require('binaryjs').BinaryServer,
     spawn = require('child_process').spawn;
 
 // ===============================================
