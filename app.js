@@ -82,7 +82,6 @@ binaryServer.on("connection", function(client) {
 
 
 var cameraServer = {
-  _captures: 0,
   _childProcess: null,
   _clients: [],
   _stream: null,
@@ -95,11 +94,6 @@ var cameraServer = {
         stdoutHandler = function(data) {
           self.broadcast(data);
           console.log('[ stdout ] DATA EVENT', ++counter);
-        },
-        endHandler = function(data) {
-          console.log('[ STDOUT END ]');
-          console.log('[ capture ] END CAPTURE ', ++self._captures);
-          if (!self.halt) self.startCapture();
         },
         childProcess = spawn('raspivid', ['-t', '0', '-o', '-' ]);
 
@@ -129,7 +123,7 @@ var cameraServer = {
 
   broadcast: function(data) {
     this._clients.forEach(function(client) {
-      if (client._status === 1) client.send(data);
+      if (client._status === 1) client.stream.write(data);
     });
   },
 
