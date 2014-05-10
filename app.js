@@ -110,9 +110,12 @@ var cameraServer = {
     var client = new BinaryClient(socket);
     this._clients.push(client);
     console.log('Client total is ' + this._clients.length);
+
+    var clientStream = client.createStream('video');
     this.broadcaster.addListener('frame', function(data) {
-      client.send(data, 'video');
+      clientStream.write(data, 'video');
     });
+
 
     client.on('close', this.removeClient.bind(this, client));
 
