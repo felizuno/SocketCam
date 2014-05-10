@@ -10,26 +10,32 @@
       console.log('[ STUFF IS HAPPENING ]', arguments);
     });
 
-    client.on('stream', function(stream, meta){    
+    client.on('stream', function(stream, meta){
+      var tempcanvas = document.createElement('canvas');
+      tempcanvas.height = 768;
+      tempcanvas.width = 1024;
+      var tempcontext = tempcanvas.getContext('2d');
       // Buffer for parts
       var parts = [];
       // Got new data
       stream.on('data', function(data){
         console.log('[ DATA ARRIVE ] ', data);
-        parts.push(data);
+        // var bytes = new Uint8Array(data);
+        // parts.push(data);
+
+        tempcontext.drawImage(data, 0, 0);
       });
       stream.on('close', function(){
         console.log('[ STREAM END ]')
-        // Display new data in browser!
-        var video = document.createElement("video");
-        video.src = (window.URL || window.webkitURL).createObjectURL(new Blob(parts));
-        document.body.innerHTML = "";
-        document.body.appendChild(video);
-        lastFrame = video;
+        // // Display new data in browser!
+        // var video = document.createElement("video");
+        // video.src = (window.URL || window.webkitURL).createObjectURL(new Blob(parts));
+        // document.body.innerHTML = "";
+        // document.body.appendChild(video);
+        // lastFrame = video;
       });
     });
   </script>
-  <video src=""></video>
 </head>
 <body>
 </body>
