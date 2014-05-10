@@ -72,12 +72,18 @@ var cameraServer = {
   _clients: [],
 
   startCapture: function() {
-    var counter = 0;
-    var stdoutHandler = function(err, stdout, stderr) {
+    var counter = 0,
+        stdoutHandler = function(err, stdout, stderr) {
           if (err) console.log ('you set it up wrong', err);
-          console.log('stdout!', counter++);
+          console.log('[ stdout ] DATA EVENT', counter++);
         },
-        childProcess = spawn('raspivid -t 1000 -o - ', stdoutHandler);
+        endHandler = function(data) {
+          console.log('[ STDOUT END ]');
+        },
+        childProcess = spawn('raspivid -t 1000 -o - ');
+
+    childProcess.stdout.on('data', stdoutHandler);
+    childProcess.stdout.on('end', endHandler);
   },
 
   stopCapture: function() {
