@@ -59,11 +59,6 @@ http.createServer(function(request, response) {
 var socketPort = 9999,
     socketServer = new ws.Server({port: socketPort});
 
-socketServer.on("connection", function(socket) {
-  cameraServer.addClient(socket);
-});
-
-
 // ===============================================
 // =========== Binary Server
 // ===============================================
@@ -113,10 +108,8 @@ var cameraServer = {
     this._clients.push(client);
     console.log('Client total is ' + this._clients.length);
     this.broadcaster.addListener('frame', function(data) {
-      client.send(data);
+      client.send(data, 'video');
     });
-
-    client.createStream('video');
 
     client.on('close', this.removeClient.bind(this, client));
 
