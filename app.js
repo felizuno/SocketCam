@@ -83,7 +83,7 @@ var cameraServer = {
         endHandler = function(data) {
           console.log('[ STDOUT END ]');
           console.log('[ capture ] END CAPTURE ', ++self._captures);
-          if (!sefl.halt) self.startCapture();
+          if (!self.halt) self.startCapture();
         },
         childProcess = spawn('raspivid', ['-t', '1000', '-o', '-' ]);
 
