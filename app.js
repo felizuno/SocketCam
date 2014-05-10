@@ -110,7 +110,6 @@ var cameraServer = {
   addClient: function(client) {
     this._clients.push(client);
     console.log('New client, total is ' + this._clients.length);
-    client.on('open', function() { client._status = 1; });
     client.on('close', this.removeClient.bind(this, client));
     this.pokeCamera();
   },
@@ -123,7 +122,7 @@ var cameraServer = {
 
   broadcast: function(data) {
     this._clients.forEach(function(client) {
-      if (client._status === 1) client.stream.write(data);
+      client.stream.write(data);
     });
   },
 
