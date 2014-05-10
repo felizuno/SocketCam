@@ -7,9 +7,8 @@ var http = require("http"),
     url = require("url"),
     path = require("path"),
     fs = require("fs"),
-    ws = require("ws"),
+    binaryServer = require('binaryjs').BinaryServer,
     spawn = require('child_process').spawn;
-
 
 // ===============================================
 // =========== HTTP Server
@@ -64,24 +63,37 @@ socketServer.on("connection", function(socket) {
 
 
 // ===============================================
+// =========== Binary Server
+// ===============================================
+
+
+var binaryServer = BinaryServer({
+  server: socketServer
+});
+
+binaryServer.on("connection", function(client) {
+  cameraServer.addClient(client);
+});
+
+
+// ===============================================
 // =========== App
 // ===============================================
 
 
 var cameraServer = {
   _captures: 0,
-  _halt: false,
   _childProcess: null,
   _clients: [],
+  _stream: null,
 
   startCapture: function() {
+    console.log('\n\n\nStarting video capture!');
+
     var self = this,
         counter = 0,
         stdoutHandler = function(data) {
-          if (counter === 5) {
-            console.log('[ stdout ] SAMPLE DATA ', data);
-            self.stopCapture();
-          }
+          self.broadcast(data);
           console.log('[ stdout ] DATA EVENT', ++counter);
         },
         endHandler = function(data) {
@@ -89,44 +101,44 @@ var cameraServer = {
           console.log('[ capture ] END CAPTURE ', ++self._captures);
           if (!self.halt) self.startCapture();
         },
-        childProcess = spawn('raspivid', ['-t', '1000', '-o', '-' ]);
+        childProcess = spawn('raspivid', ['-t', '0', '-o', '-' ]);
 
     this._childProcess = childProcess;
     childProcess.stdout.on('data', stdoutHandler);
-    childProcess.stdout.on('end', endHandler);
   },
 
   stopCapture: function() {
-    this.halt = true;
+    this._childProcess.kill();
+    this._childProcess = null;
   },
 
-  addClient: function(socket) {
-    _clients.push(new Client(socket));
+  addClient: function(client) {
+    _clients.push(client);
     console.log('New client, total is ' + this._clients.length);
+    this.pokeCamera();
+    stream = client.createStream();
+    stream.on('open', function() { client._status = 1; });
+    stream.on('close', this.removeClient.bind(this, client));
   },
 
   removeClient: function(client) {
     this._clients.splice(this._clients.indexOf(client), 1, 0);
+    if (this._clients.length === 0) this.stopCapture();
     console.log('Lost client, total is ' + this._clients.length);
   },
 
   broadcast: function(data) {
-    this._clients.forEach(function(client) { client.sendStream(data); });
+    this._clients.forEach(function(client) {
+      if (client._status === 1) client.send(data);
+    });
+  },
+
+  pokeCamera: function() {
+    if (this._stream !== null && this._clients.length > 0) {
+      this.startCapture();
+    }
   }
 };
-
-var Client = function(socket) {
-  this.socket = socket;
-  this.openendOn = Date.now();
-  this.socket.on('close', function() { cameraServer.removeUser(this); });
-};
-
-Client.prototype = {
-  sendStream: function(data) {
-    this.socket.send(JSON.stringify({ method: 'newFrame', data: data }));
-  }
-};
-
 
 // ===============================================
 // =========== Boot Logging
@@ -136,6 +148,3 @@ Client.prototype = {
 console.log('\n\n\nSocket server listening on port ' + socketPort );
 console.log('\nHTTP server listening on port ' + httpPort );
 console.log('\n\n\n ctrl+c to stop');
-
-console.log('\n\n\nStarting video capture!');
-cameraServer.startCapture();

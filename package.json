@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/felizuno/SocketCam",
   "dependencies": {
-    "ws": "^0.4.31"
+    "ws": "^0.4.31",
+    "binaryjs": "^0.2.1"
   }
 }
