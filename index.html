@@ -4,7 +4,7 @@
   <script>
     // Connect to Binary.js server
     var client = new BinaryClient('ws://10.0.1.13:9999');
-    var lastFrame = null;
+    var rows = 0;
     // Received new stream from server!
     client.on('all', function() {
       console.log('[ STUFF IS HAPPENING ]', arguments);
@@ -29,7 +29,7 @@
         }
 
 
-        tempcontext.putImageData(image, 0, 0);
+        tempcontext.putImageData(image, 0, rows);
         debugger;
       });
       // stream.on('data', function(data){
