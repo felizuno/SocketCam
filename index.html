@@ -22,13 +22,13 @@
         var bytes = new Uint8Array(data),
             image = tempcontext.createImageData(tempcanvas.width, tempcanvas.height);
 
-        for (var i=0; i<bytes.length; i++) {
-          tempcontext.putImageData(bytes[i], 
+        for (var i=0; i<bytes.length; i) {
+          tempcontext.putImageData([bytes[i++], bytes[i++], bytes[i++], 0], 
             Math.floor(i - (Math.floor(i / 1024) * 1024)), 
             Math.floor(i / 1024)
           );
         }
-        
+
         debugger;
 
       });
