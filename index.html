@@ -9,14 +9,13 @@
     client.on('all', function() {
       console.log('[ STUFF IS HAPPENING ]', arguments);
     });
+    var tempcanvas = document.createElement('canvas');
+    tempcanvas.height = 768;
+    tempcanvas.width = 1024;
+    document.body.appendChild(tempcanvas);
+    var tempcontext = tempcanvas.getContext('2d');
 
     client.on('stream', function(stream, meta){
-      var tempcanvas = document.createElement('canvas');
-      tempcanvas.height = 768;
-      tempcanvas.width = 1024;
-      document.body.appendChild(tempcanvas);
-      var tempcontext = tempcanvas.getContext('2d');
-
       stream.on('data', function(data){
         // 4096 bytes
         var bytes = new Uint8Array(data),
@@ -30,7 +29,6 @@
 
 
         tempcontext.putImageData(image, 0, rows);
-        debugger;
       });
       // stream.on('data', function(data){
       //   console.log('[ DATA ARRIVE ] ', data);
