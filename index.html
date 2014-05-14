@@ -17,15 +17,16 @@
       var tempcontext = tempcanvas.getContext('2d');
 
       stream.on('data', function(data){
+        // 4096 byte chunks
         console.log('[ DATA ARRIVE ] ', data);
         var bytes = new Uint8Array(data),
-            image = tempcontext.createImageData(tempcanvas.width, tempcanvas.height);
-        debugger;
-        for (var i=0; i<image.length; i++) {
-            image[i] = bytes[i];
-        }
+            image = tempcontext.createImageData(bytes);
+        // for (var i=0; i<image.length; i++) {
+        //     image[i] = bytes[i];
+        // }
 
         tempcontext.drawImage(image, 0, 0);
+        debugger;
       });
       // stream.on('data', function(data){
       //   console.log('[ DATA ARRIVE ] ', data);
