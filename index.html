@@ -19,14 +19,14 @@
       stream.on('data', function(data){
         // 4096 bytes
         var bytes = new Uint8Array(data),
-            blob = new Blob(data),
-            otherBytes = newUnit8Array(blob),
+            // blob = new Blob(data),
+            // otherBytes = newUnit8Array(blob),
             image = tempcontext.createImageData(tempcanvas.width, tempcanvas.height);
 
         for (var i=0; i<image.length; i++) {
-            image.data[i] = otherBytes[i];
+            image.data[i] = bytes[i];
         }
-        
+
         debugger;
 
         tempcontext.drawImage(image, 0, 0);
