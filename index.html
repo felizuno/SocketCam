@@ -41,7 +41,7 @@
       //   tempcontext.putImageData(bytes, 0, 0);
       // });
       stream.on('close', function(){
-        console.log('[ STREAM END ]', tempcontext.getImageData())
+        console.log('[ STREAM END ]', tempcontext.getImageData(0,0,1024,768))
         // // Display new data in browser!
         // var video = document.createElement("video");
         // video.src = (window.URL || window.webkitURL).createObjectURL(new Blob(parts));
