@@ -40,7 +40,7 @@
 
       //   tempcontext.putImageData(bytes, 0, 0);
       // });
-      stream.on('end', function(){
+      stream.on('close', function(){
         console.log('[ STREAM END ]', tempcontext.getImageData())
         // // Display new data in browser!
         // var video = document.createElement("video");
