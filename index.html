@@ -17,16 +17,21 @@
       var tempcontext = tempcanvas.getContext('2d');
 
       stream.on('data', function(data){
-        // 4096 byte chunks
+        // 4096 byte
         console.log('[ DATA ARRIVE ] ', data);
         var bytes = new Uint8Array(data),
-            image = tempcontext.createImageData(data);
-        // for (var i=0; i<image.length; i++) {
-        //     image[i] = bytes[i];
-        // }
+            image = tempcontext.createImageData(tempcanvas.width, tempcanvas.height);
+        debugger;
+        var page = 0, i = 0, k = 0, totalPages = image.length;
+        for (page; page < totalPages; page++) {
+            i = 0;
+            for (i; i < image[page].length; i++) {
+              imgage[k] = image[page][i];
+              k++;
+            }
+        }
 
         tempcontext.drawImage(image, 0, 0);
-        debugger;
       });
       // stream.on('data', function(data){
       //   console.log('[ DATA ARRIVE ] ', data);
