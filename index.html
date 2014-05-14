@@ -20,7 +20,7 @@
         // 4096 byte chunks
         console.log('[ DATA ARRIVE ] ', data);
         var bytes = new Uint8Array(data),
-            image = tempcontext.createImageData(bytes);
+            image = tempcontext.createImageData(data);
         // for (var i=0; i<image.length; i++) {
         //     image[i] = bytes[i];
         // }
