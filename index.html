@@ -41,7 +41,11 @@
       //   tempcontext.putImageData(bytes, 0, 0);
       // });
       stream.on('close', function(){
-        console.log('[ STREAM END ]', tempcontext.getImageData(0,0,1024,768))
+        console.log('[ STREAM END ]');
+        window.results = tempcontext.getImageData(0,0,1024,768).data;
+        for (var i = 0; i < 300000; i++) {
+          if (data[i] !== 0) console.log('HOLY SMOKES IT WORKS');
+        }
         // // Display new data in browser!
         // var video = document.createElement("video");
         // video.src = (window.URL || window.webkitURL).createObjectURL(new Blob(parts));
