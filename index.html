@@ -44,7 +44,7 @@
         console.log('[ STREAM END ]');
         window.results = tempcontext.getImageData(0,0,1024,768).data;
         for (var i = 0; i < 300000; i++) {
-          if (data[i] !== 0) console.log('HOLY SMOKES IT WORKS');
+          if (window.results[i] !== 0) console.log('HOLY SMOKES IT WORKS');
         }
         // // Display new data in browser!
         // var video = document.createElement("video");
