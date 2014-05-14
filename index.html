@@ -21,17 +21,16 @@
         console.log('[ DATA ARRIVE ] ', data);
         var bytes = new Uint8Array(data),
             image = tempcontext.createImageData(tempcanvas.width, tempcanvas.height);
-        debugger;
-        var page = 0, i = 0, k = 0, totalPages = bytes.length;
-        for (page; page < totalPages; page++) {
-            i = 0;
-            for (i; i < image[page].length; i++) {
-              imgage.data[k] = image[page][i];
-              k++;
-            }
-        }
 
-        tempcontext.drawImage(image, 0, 0);
+        for (var i=0; i<bytes.length; i++) {
+          tempcontext.putImageData(bytes[i], 
+            Math.floor(i - (Math.floor(i / 1024) * 1024)), 
+            Math.floor(i / 1024)
+          );
+        }
+        
+        debugger;
+
       });
       // stream.on('data', function(data){
       //   console.log('[ DATA ARRIVE ] ', data);
